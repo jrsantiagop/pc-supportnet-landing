@@ -93,7 +93,7 @@ document.addEventListener("DOMContentLoaded", () => {
     "svc-alarmas": {
       icon: "img/icon-alarmas.png",
       iconImg: true,
-      title: "Sistemas de intrusión y detección",
+      title: "Sistemas de alarma de intrusión y detección",
       img: "img/svc-alarmas.jpg",
       desc: "Desplegamos sistemas de detección electrónica de intrusos diseñados para salvaguardar operaciones críticas. Ante un evento de intrusión, la plataforma activa respuestas automatizadas conforme al protocolo definido: sirenas, iluminación, notificación a Central de Monitoreo o escalamiento mediante alertas por correo electrónico y mensajería.",
       items: [
