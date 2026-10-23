@@ -239,38 +239,64 @@ document.addEventListener("DOMContentLoaded", () => {
     if (e.key === "Escape") closeModal();
   });
 
-  /* ---------- Formulario de contacto (FormSubmit.co) ---------- */
+  /* ---------- Formulario de contacto (FormSubmit.co vía AJAX) ----------
+     Se envía sin salir de la página: nunca se redirige al usuario. */
   const form = document.getElementById("contact-form");
   const note = document.getElementById("form-note");
 
   if (form && note) {
-    // Validación en el navegador: si todo está correcto, se envía de verdad
-    // a FormSubmit (action del formulario). Si falta algo, se detiene.
-    form.addEventListener("submit", (e) => {
+    const ENDPOINT = "https://formsubmit.co/ajax/info@pcsupportnet.com.mx";
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const textoBoton = submitBtn ? submitBtn.textContent : "";
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
       const nombre = form.querySelector("#nombre").value.trim();
       const email = form.querySelector("#email").value.trim();
       const mensaje = form.querySelector("#mensaje").value.trim();
 
       if (!nombre || !email || !mensaje) {
-        e.preventDefault();
         note.style.color = "#e5534b";
         note.textContent = "Por favor completa los campos obligatorios.";
         return;
       }
 
-      // Mostrar estado de envío mientras FormSubmit procesa
+      // Estado "enviando"
       note.style.color = "#5bc9ba";
       note.textContent = "Enviando su mensaje...";
-    });
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = "Enviando...";
+      }
 
-    // Mensaje de confirmación tras regresar del envío (?enviado=1)
-    if (window.location.search.indexOf("enviado=1") !== -1) {
-      note.style.color = "#5bc9ba";
-      note.textContent = "¡Gracias! Su mensaje fue enviado. Le contactaremos pronto.";
-      form.reset();
-      setTimeout(() => {
-        note.textContent = "";
-      }, 8000);
-    }
+      try {
+        const datos = new FormData(form);
+        // FormSubmit AJAX no usa el campo _honey en este endpoint
+        datos.delete("_honey");
+
+        const respuesta = await fetch(ENDPOINT, {
+          method: "POST",
+          headers: { Accept: "application/json" },
+          body: datos,
+        });
+
+        if (!respuesta.ok) throw new Error("Error en el envío");
+
+        note.style.color = "#5bc9ba";
+        note.textContent =
+          "¡Gracias! Su mensaje fue enviado. Le contactaremos pronto.";
+        form.reset();
+      } catch (err) {
+        note.style.color = "#e5534b";
+        note.textContent =
+          "No se pudo enviar el mensaje. Intente de nuevo o escríbanos por WhatsApp.";
+      } finally {
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = textoBoton;
+        }
+      }
+    });
   }
 });
