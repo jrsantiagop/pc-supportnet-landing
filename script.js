@@ -239,32 +239,38 @@ document.addEventListener("DOMContentLoaded", () => {
     if (e.key === "Escape") closeModal();
   });
 
-  /* ---------- Formulario de contacto (demo) ---------- */
+  /* ---------- Formulario de contacto (FormSubmit.co) ---------- */
   const form = document.getElementById("contact-form");
   const note = document.getElementById("form-note");
 
   if (form && note) {
+    // Validación en el navegador: si todo está correcto, se envía de verdad
+    // a FormSubmit (action del formulario). Si falta algo, se detiene.
     form.addEventListener("submit", (e) => {
-      e.preventDefault();
-
       const nombre = form.querySelector("#nombre").value.trim();
       const email = form.querySelector("#email").value.trim();
       const mensaje = form.querySelector("#mensaje").value.trim();
 
       if (!nombre || !email || !mensaje) {
+        e.preventDefault();
         note.style.color = "#e5534b";
         note.textContent = "Por favor completa los campos obligatorios.";
         return;
       }
 
-      // Simulación de envío (aquí conectarías tu backend o servicio de correo)
+      // Mostrar estado de envío mientras FormSubmit procesa
       note.style.color = "#5bc9ba";
-      note.textContent = `¡Gracias, ${nombre}! Te contactaremos pronto.`;
-      form.reset();
+      note.textContent = "Enviando su mensaje...";
+    });
 
+    // Mensaje de confirmación tras regresar del envío (?enviado=1)
+    if (window.location.search.indexOf("enviado=1") !== -1) {
+      note.style.color = "#5bc9ba";
+      note.textContent = "¡Gracias! Su mensaje fue enviado. Le contactaremos pronto.";
+      form.reset();
       setTimeout(() => {
         note.textContent = "";
-      }, 5000);
-    });
+      }, 8000);
+    }
   }
 });
