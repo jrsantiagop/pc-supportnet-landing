@@ -460,13 +460,15 @@
         </div>
 
         <form class="contact__form" id="contact-form"
-              action="https://formsubmit.co/info@pcsupportnet.com.mx" method="POST">
-          <!-- Configuracion de FormSubmit -->
-          <input type="hidden" name="_subject" value="Nuevo contacto desde el sitio web - PC Supportnet" />
-          <input type="hidden" name="_template" value="table" />
-          <input type="hidden" name="_captcha" value="false" />
-          <input type="hidden" name="_next" value="https://www.pcsupportnet.com.mx/?enviado=1#contacto" />
-          <input type="text" name="_honey" style="display:none" />
+              action="https://api.web3forms.com/submit" method="POST">
+          <!-- Configuracion de Web3Forms (la Access Key es publica, no es un secreto) -->
+          <input type="hidden" name="access_key" value="6f3a6ec4-4ed7-4bd7-b8c1-3fe59036a4c4" />
+          <input type="hidden" name="subject" value="Nuevo contacto desde el sitio web - PC Supportnet" />
+          <input type="hidden" name="from_name" value="Sitio web PC Supportnet" />
+          <!-- Respaldo si el navegador no ejecuta JavaScript -->
+          <input type="hidden" name="redirect" value="https://www.pcsupportnet.com.mx/?enviado=1#contacto" />
+          <!-- Honeypot anti-spam: invisible para personas -->
+          <input type="checkbox" name="botcheck" style="display:none" tabindex="-1" autocomplete="off" />
 
           <div class="form__group">
             <label for="nombre">Nombre completo</label>

@@ -239,45 +239,91 @@ document.addEventListener("DOMContentLoaded", () => {
     if (e.key === "Escape") closeModal();
   });
 
-  /* ---------- Formulario de contacto (FormSubmit.co) ---------- */
+  /* ---------- Formulario de contacto (Web3Forms, envío AJAX) ----------
+     El usuario NUNCA sale de la página: no hay redirección ni activación. */
   const form = document.getElementById("contact-form");
   const note = document.getElementById("form-note");
 
   if (form && note) {
-    /* La redirección de FormSubmit debe apuntar SIEMPRE al dominio real,
-       nunca a un subdominio de pruebas. Se calcula en tiempo de ejecución
-       para que funcione igual en producción y en cualquier preview. */
-    const nextField = form.querySelector('input[name="_next"]');
-    if (nextField) {
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const textoBoton = submitBtn ? submitBtn.textContent : "";
+
+    /* La redirección de respaldo (navegadores sin JavaScript) apunta
+       siempre al dominio real, nunca a un subdominio de pruebas. */
+    const redirectField = form.querySelector('input[name="redirect"]');
+    if (redirectField) {
       const origen = window.location.origin;
       const ruta = window.location.pathname.replace(/index\.html$/i, "");
-      nextField.value = origen + ruta + "?enviado=1#contacto";
+      redirectField.value = origen + ruta + "?enviado=1#contacto";
     }
 
-    // Validación en el navegador: si todo está correcto, se envía de verdad
-    // a FormSubmit (action del formulario). Si falta algo, se detiene.
-    form.addEventListener("submit", (e) => {
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
       const nombre = form.querySelector("#nombre").value.trim();
       const email = form.querySelector("#email").value.trim();
       const mensaje = form.querySelector("#mensaje").value.trim();
 
       if (!nombre || !email || !mensaje) {
-        e.preventDefault();
         note.style.color = "#e5534b";
         note.textContent = "Por favor completa los campos obligatorios.";
         return;
       }
 
-      // Mostrar estado de envío mientras FormSubmit procesa
+      // "Responder" en el correo debe contestar al visitante, no a nosotros
+      let replyto = form.querySelector('input[name="replyto"]');
+      if (!replyto) {
+        replyto = document.createElement("input");
+        replyto.type = "hidden";
+        replyto.name = "replyto";
+        form.appendChild(replyto);
+      }
+      replyto.value = email;
+
+      // Estado "enviando"
       note.style.color = "#5bc9ba";
       note.textContent = "Enviando su mensaje...";
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = "Enviando...";
+      }
+
+      try {
+        const datos = Object.fromEntries(new FormData(form));
+        const respuesta = await fetch(form.action, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify(datos),
+        });
+        const resultado = await respuesta.json();
+
+        if (!respuesta.ok || resultado.success !== true) {
+          throw new Error(resultado.message || "Error en el envío");
+        }
+
+        note.style.color = "#5bc9ba";
+        note.textContent =
+          "¡Gracias! Su mensaje fue enviado. Le contactaremos pronto.";
+        form.reset();
+      } catch (err) {
+        note.style.color = "#e5534b";
+        note.textContent =
+          "No se pudo enviar el mensaje. Escríbanos por WhatsApp al 55 4611 7215.";
+      } finally {
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = textoBoton;
+        }
+      }
     });
 
-    // Mensaje de confirmación tras regresar del envío (?enviado=1)
+    // Mensaje de confirmación si se usó el envío de respaldo (?enviado=1)
     if (window.location.search.indexOf("enviado=1") !== -1) {
       note.style.color = "#5bc9ba";
       note.textContent = "¡Gracias! Su mensaje fue enviado. Le contactaremos pronto.";
-      form.reset();
       setTimeout(() => {
         note.textContent = "";
       }, 8000);
