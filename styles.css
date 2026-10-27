@@ -1332,6 +1332,126 @@ ul { list-style: none; }
 body.modal-open { overflow: hidden; }
 
 /* ============================================================
+   MARCAS DESTACADAS — carrusel infinito
+   ============================================================ */
+
+.brands {
+  overflow: hidden;
+}
+
+.brands .section__lead {
+  max-width: 760px;
+}
+
+.brands__surface {
+  margin-top: 46px;
+  padding-block: 6px;
+}
+
+.brands__viewport {
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 7%, #000 93%, transparent 100%);
+  mask-image: linear-gradient(90deg, transparent 0, #000 7%, #000 93%, transparent 100%);
+}
+
+@supports (overflow: clip) {
+  .brands__viewport {
+    overflow: clip;
+  }
+}
+
+.brands__track {
+  display: flex;
+  width: max-content;
+  animation: brands-marquee 72s linear infinite;
+  will-change: transform;
+}
+
+.brands__group {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding-right: 16px;
+}
+
+.brands__item {
+  flex: 0 0 auto;
+  width: 176px;
+  height: 88px;
+  display: grid;
+  place-items: center;
+  padding: 14px 18px;
+  background: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
+}
+
+.brands__item img {
+  width: auto;
+  max-width: 100%;
+  max-height: 52px;
+  object-fit: contain;
+  filter: grayscale(1);
+  opacity: 0.82;
+  transition: filter var(--transition), opacity var(--transition);
+}
+
+.brands__item:hover {
+  transform: translateY(-4px);
+  border-color: rgba(91, 201, 186, 0.55);
+  box-shadow: 0 16px 30px rgba(0, 0, 0, 0.45);
+}
+
+.brands__item:hover img {
+  filter: none;
+  opacity: 1;
+}
+
+/* Se detiene al pasar el cursor o al navegar con teclado */
+.brands__surface:hover .brands__track,
+.brands__surface:focus-within .brands__track {
+  animation-play-state: paused;
+}
+
+@keyframes brands-marquee {
+  from { transform: translate3d(0, 0, 0); }
+  to   { transform: translate3d(-50%, 0, 0); }
+}
+
+/* Respeta la preferencia de movimiento reducido */
+@media (prefers-reduced-motion: reduce) {
+  .brands__track {
+    animation: none;
+  }
+
+  .brands__viewport {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .brands__group[aria-hidden="true"] {
+    display: none;
+  }
+}
+
+@media (max-width: 720px) {
+  .brands__surface {
+    margin-top: 34px;
+  }
+
+  .brands__item {
+    width: 150px;
+    height: 78px;
+    padding: 12px 14px;
+  }
+
+  .brands__item img {
+    max-height: 44px;
+  }
+}
+
+/* ============================================================
    RESPONSIVE
    ============================================================ */
 
