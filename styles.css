@@ -200,6 +200,19 @@ ul { list-style: none; }
   font-size: 0.78rem;
 }
 
+/* Iconos vectoriales (reemplazan emojis del sistema) */
+.ico {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  display: block;
+}
+
+.ico--fill {
+  width: 13px;
+  height: 13px;
+}
+
 .topbar__contacts,
 .topbar__meta {
   display: flex;
@@ -208,6 +221,9 @@ ul { list-style: none; }
 }
 
 .topbar__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
   color: var(--text-dim);
   transition: var(--transition);
   white-space: nowrap;
@@ -216,11 +232,17 @@ ul { list-style: none; }
 .topbar__link:hover { color: var(--accent); }
 
 .topbar__hours {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
   color: #6c727a;
   white-space: nowrap;
 }
 
 .topbar__wa {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
   font-family: var(--font-title);
   font-size: 0.7rem;
   font-weight: 600;
@@ -641,9 +663,13 @@ ul { list-style: none; }
   height: 28px;
   display: grid;
   place-items: center;
-  font-size: 0.85rem;
-  font-weight: 700;
   flex-shrink: 0;
+}
+
+.feature__icon svg {
+  width: 15px;
+  height: 15px;
+  display: block;
 }
 
 .feature h4 {
@@ -914,7 +940,17 @@ ul { list-style: none; }
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-.li__icon { color: var(--accent); }
+.li__icon {
+  color: var(--accent);
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+.li__icon svg {
+  width: 13px;
+  height: 13px;
+  display: block;
+}
 
 .contact__form {
   background: var(--panel);
@@ -1005,7 +1041,21 @@ ul { list-style: none; }
 .footer__contact {
   margin-top: 16px;
   display: grid;
-  gap: 8px;
+  gap: 9px;
+}
+
+.footer__contact li {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  font-size: 0.88rem;
+  color: var(--text-dim);
+  line-height: 1.45;
+}
+
+.footer__contact .ico {
+  margin-top: 3px;
+  color: var(--accent);
 }
 
 .footer__contact a {
@@ -1058,12 +1108,17 @@ ul { list-style: none; }
   background: var(--accent);
   border: 2px solid var(--accent);
   color: #101010;
-  font-size: 1.5rem;
   display: grid;
   place-items: center;
   z-index: 900;
   transition: var(--transition);
   box-shadow: var(--shadow);
+}
+
+.whatsapp svg {
+  width: 27px;
+  height: 27px;
+  display: block;
 }
 
 .whatsapp:hover {
@@ -1362,7 +1417,8 @@ body.modal-open { overflow: hidden; }
 }
 
 @media (max-width: 520px) {
-  .topbar__link { font-size: 0.68rem; }
+  .topbar__link { font-size: 0.68rem; gap: 6px; }
+  .topbar__link .ico { width: 12px; height: 12px; }
   .topbar__meta { display: none; }
   .topbar__contacts { gap: 10px; }
 

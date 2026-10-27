@@ -244,6 +244,16 @@ document.addEventListener("DOMContentLoaded", () => {
   const note = document.getElementById("form-note");
 
   if (form && note) {
+    /* La redirección de FormSubmit debe apuntar SIEMPRE al dominio real,
+       nunca a un subdominio de pruebas. Se calcula en tiempo de ejecución
+       para que funcione igual en producción y en cualquier preview. */
+    const nextField = form.querySelector('input[name="_next"]');
+    if (nextField) {
+      const origen = window.location.origin;
+      const ruta = window.location.pathname.replace(/index\.html$/i, "");
+      nextField.value = origen + ruta + "?enviado=1#contacto";
+    }
+
     // Validación en el navegador: si todo está correcto, se envía de verdad
     // a FormSubmit (action del formulario). Si falta algo, se detiene.
     form.addEventListener("submit", (e) => {
